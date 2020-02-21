@@ -1,0 +1,185 @@
+﻿@model IP_Project.Models.FloorPlanViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Index";
+    int floor = Model.FloorId;
+}
+<head>
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.13.0/css/mdb.min.css" rel="stylesheet">
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.13.0/js/mdb.min.js"></script>
+</head>
+<body>
+    @Html.Partial("_Header")
+    <img src="~/img/heatmap.jpg" class="logo" />
+
+    <div class="container">
+        <div class="all-floors">
+            <button class="btn floorBtn" onclick="setFloor(0)">Ground floor</button>
+            <button class="btn floorBtn" onclick="setFloor(1)">First floor</button>
+            <button class="btn floorBtn" onclick="setFloor(2)">Second floor</button>
+            <button class="btn floorBtn" onclick="setFloor(3)">Third floor</button>
+        </div>
+        <div class="card own-card">
+            <div class="map" id="groundfloor-map">
+                <img src="~/img/floor0.png" class="floorplan" id="groundfloor" />
+                @foreach (var dim in Model.Dimensions)
+                {
+
+                    string left = dim.Width + "%";
+                    string top = dim.Height + "%";
+                    string error = "rgb(255,175,6)";
+                    string yellow = "rgba(253,224,139,1)"; //12 people
+                    string orange = "rgba(246,141,92,1)"; // 15 people
+                    string red = "rgba(214,62,80,1)";  // 20 people
+                    string neutral = "rgba(251,247,193,1)"; //10 people
+                    string lightGreen = "rgba(230,236,153,1)"; // 8 people
+                    string green = "rgba(154,208,147,1)"; // 5 people
+                    string blue = "rgba(51,137,189,1)"; // 0 people
+                    var area = Model.Areas.Where(ar => ar.AreaNumber == dim.AreaNumber).FirstOrDefault();
+                    string color1, color2, color3;
+                    if (area != null)
+                    {
+                        if (area.Amount >= 20)
+                        {
+                            color1 = red; color2 = orange; color3 = yellow;
+                        }
+                        else if (area.Amount >= 15)
+                        {
+                            color1 = orange; color2 = yellow; color3 = neutral;
+                        }
+                        else if (area.Amount >= 12)
+                        {
+                            color1 = yellow; color2 = neutral; color3 = neutral;
+                        }
+                        else if (area.Amount >= 10)
+                        {
+                            color1 = neutral; color2 = lightGreen; color3 = lightGreen;
+                        }
+                        else if (area.Amount >= 8)
+                        {
+                            color1 = lightGreen; color2 = green; color3 = blue;
+
+                        }
+                        else if (area.Amount >= 5)
+                        {
+                            color1 = green; color2 = green; color3 = blue;
+
+                        }
+                        else if (area.Amount > 0)
+                        {
+                            color1 = green; color2 = blue; color3 = blue;
+
+                        }
+                        else
+                        {
+                            color1 = blue; color2 = blue; color3 = blue;
+
+                        }
+                    }
+                    else
+                    {
+                        color1 = error; color2 = error; color3 = error;
+
+                    }
+                    @if (area == null)
+                    {
+                        <a class="mark-point" style="left:@left;top:@top;position:absolute;background: radial-gradient(circle, @color1 0%, @color2 37%, @color3 100%);"><i class="fas fa-plus"></i></a>
+                    }
+                    else
+                    {
+                        <a class="mark-point" style="left:@left;top:@top;position:absolute;background: radial-gradient(circle, @color1 0%, @color2 37%, @color3 100%);" onclick="showDetails('@area.Amount', '@area.AreaNumber')"><i class="fas fa-plus"></i></a>
+                    }
+                }
+            </div>
+            <div class="card-body content-card">
+                <h2 class="card-title" id="floor-title">Ground floor</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="details-camera" tabindex="-1" role="dialog"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create camera</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label>Area number</label>
+                        <input class="form-control" id="area-number" disabled />
+
+                        <label>Amount of people</label>
+                        <input class="form-control" id="area-amount" disabled />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    $(document).ready(function () {
+       load(@floor);
+    });
+
+
+    function load(x) {
+        let src = "";
+        let innerHtml = "";
+        switch (x) {
+            case 0:
+                src = "/img/floor0.png";
+                innerHtml = "Ground Floor";
+                break;
+            case 1:
+                src = "/img/floor1.png";
+                innerHtml = "First Floor";
+                break;
+            case 2:
+                src = "/img/floor2.png";
+                innerHtml = "Second Floor";
+                break;
+            case 3:
+                src = "/img/floor3.png";
+                innerHtml = "Third Floor";
+                break;
+        }
+        $("#groundfloor").attr("src", src)
+        $("#floor-title").text(innerHtml);
+    }
+
+    function setFloor(floor) {
+        window.location.href = `/Area/Index/${floor}`;
+    }
+
+    function showDetails(amount, areanumber) {
+        $("#area-number").val(areanumber);
+        $("#area-amount").val(amount);
+        $("#details-camera").modal('show');
+    }
+</script>
+
+

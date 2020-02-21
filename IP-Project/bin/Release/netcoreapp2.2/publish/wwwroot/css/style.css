@@ -1,0 +1,70 @@
+﻿* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+body {
+    background-color: #33b5e5 !important;
+}
+
+.container{
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-content:center;
+    justify-content:center;
+}
+
+.own-card {
+    width: 1150px;
+    height: 900px;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 0 auto;
+}
+.map {
+    position: relative;
+    margin: 0 auto;
+    height: 650px;
+    width: 1000px;
+    background-color:#f4f4f4;
+    display:block;
+    z-index:50;
+}
+.floorplan {
+    display: block;
+    margin: 0 auto;
+    height: 650px;
+    width: 1000px;
+}
+
+.content-card{
+    position:absolute;
+    top:800px;
+}
+
+.mark-point {
+    padding: 20px;
+    border-radius: 30px;
+    z-index: 10;
+}
+
+.drag-and-drop{
+    width:unset;
+    display:flex;
+    flex-direction:row; 
+    align-items:center;
+    margin-bottom:5px;
+
+}
+
+.drag-and-drop-title {
+    margin-right: 10px;
+    color:white;
+    font-weight:bold;
+    font-size:24px;
+}
+
+.mark-point > i {
+    color: white;
+}

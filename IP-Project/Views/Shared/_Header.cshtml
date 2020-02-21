@@ -1,0 +1,51 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    <div class="header">
+        <div class="tab">
+            <a asp-controller="Area" asp-action="Index" asp-route-floor="0">Heatmap</a>
+        </div>
+        <div class="tab" id="split-line">
+            <a asp-controller="Area" asp-action="Edit">Place cameras</a>
+        </div>
+    </div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    .header {
+        background-color: rgb(240,90,31);
+        color: #FFF;
+        width: 100%;
+        height: 50px;
+        border-radius: 0 0 20px 20px;
+        text-decoration: none;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .tab {
+        width: 50%;
+        text-align: center;
+        height: 100%;
+    }
+
+    #split-line {
+        border-left: 2px solid white;
+    }
+
+    .header a {
+        color: #FFF;
+        font-size: 24px;
+        font-weight: lighter;
+        margin: 10px;
+        padding-top: 20px;
+    }
+    .tab:hover{
+        background-color:rgb(255,175,6) !important;
+    }
+</style>
